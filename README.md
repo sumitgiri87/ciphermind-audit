@@ -2,6 +2,7 @@
 
 **AI-powered Cryptography & PQC Readiness Scanner**
 
+
 ## Overview
 Ciphermind is a cryptography governance and readiness analysis tool that scans
 code repositories for classical and post-quantum cryptographic usage, detects
@@ -11,6 +12,7 @@ The core engine is fully deterministic and rule-based. Optional AI components
 may be used for advisory explanations and report summarization, but never for
 authoritative detection or scoring.
 
+Ciphermind does not perform cryptographic correctness proofs, side-channel analysis, or vulnerability exploitation. It focuses on governance, readiness, and misuse detection. AI output is informational only and is never used to determine security posture, compliance status, or pass/fail outcomes.
 
 ## Modules
 - Deterministic Cryptography Scanner
@@ -31,5 +33,5 @@ cd ciphermind-audit
 - Crypto Hygiene Reports
 
 ## Documentation
-See the docs/ folder for architecture, API, and research notes. 
+See the `ciphermind/docs/` directory for architecture, API, and research notes.
 
