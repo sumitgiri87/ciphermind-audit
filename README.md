@@ -21,4 +21,4 @@ cd ciphermind-audit
 - Crypto Hygiene Reports
 
 ## Documentation
-See the docs/ folder for architecture, API, and research notes.
+See the docs/ folder for architecture, API, and research notes. 
