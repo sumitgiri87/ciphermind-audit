@@ -1,6 +1,5 @@
 # Ciphermind Audit Platform
 
-**AI-powered Cryptography & PQC Readiness Scanner**
 
 
 ## Overview
