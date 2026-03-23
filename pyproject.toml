@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ciphermind-audit"
+version = "0.1.0"
+description = "PQC-aware cryptographic audit tool for post-quantum migration planning"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "CipherMind" }]
+readme = "README.md"
+keywords = ["cryptography", "post-quantum", "pqc", "security", "audit", "cbom"]
+
+dependencies = [
+    "typer>=0.12",          # CLI framework
+    "httpx>=0.27",          # HTTP client for Ollama API
+    "pyyaml>=6.0",          # YAML rule loading
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-cov>=5.0",
+]
+
+[project.scripts]
+audit = "cli.main:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["cbom", "recommender", "cli", "scanner", "utils"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v --tb=short"
+# Prevent pytest from collecting inside audits/ or confusing cbom output dirs
+norecursedirs = ["audits", ".git", "__pycache__", "*.egg-info"]
+
+[tool.coverage.run]
+source = ["cbom", "recommender", "cli", "scanner", "utils"]
+omit = ["tests/*", "*/conftest.py"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = false
