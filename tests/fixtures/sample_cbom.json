@@ -1,0 +1,268 @@
+{
+  "$schema": "https://raw.githubusercontent.com/IBM/CBOM/main/bom-1.4-cbom-1.0.schema.json",
+  "bomFormat": "CBOM",
+  "specVersion": "1.4-cbom-1.0",
+  "serialNumber": "urn:uuid:7b666731-bd55-4ce9-805b-ba0e1ff82b21",
+  "version": 1,
+  "metadata": {
+    "timestamp": "2024-11-15T10:23:45.123456+00:00",
+    "component": {
+      "bom-ref": "my-python-app",
+      "name": "my-python-app",
+      "type": "application",
+      "externalReferences": [
+        {
+          "type": "vcs",
+          "url": "https://github.com/example/my-python-app"
+        }
+      ]
+    },
+    "tools": [
+      {
+        "name": "cryptobom-forge",
+        "vendor": "Santander Security Research",
+        "version": "1.1.0"
+      },
+      {
+        "name": "CodeQL",
+        "vendor": "GitHub",
+        "version": "2.14.3"
+      }
+    ]
+  },
+  "components": [
+    {
+      "bom-ref": "algorithm:md5",
+      "name": "MD5",
+      "type": "crypto-asset",
+      "cryptoProperties": {
+        "assetType": "algorithm",
+        "algorithmProperties": {
+          "primitive": "hash",
+          "variant": "MD5"
+        },
+        "detectionContext": [
+          {
+            "filePath": "app/utils/avatar.py",
+            "lineNumbers": [12, 13, 14],
+            "additionalContext": "hashlib.md5(email.encode('utf-8')).hexdigest()"
+          },
+          {
+            "filePath": "app/cache/key_builder.py",
+            "lineNumbers": [34, 35],
+            "additionalContext": "cache_key = hashlib.md5(str(params).encode()).hexdigest()"
+          }
+        ]
+      }
+    },
+    {
+      "bom-ref": "algorithm:sha1",
+      "name": "SHA1",
+      "type": "crypto-asset",
+      "cryptoProperties": {
+        "assetType": "algorithm",
+        "algorithmProperties": {
+          "primitive": "hash",
+          "variant": "SHA1"
+        },
+        "detectionContext": [
+          {
+            "filePath": "app/auth/token.py",
+            "lineNumbers": [56, 57, 58],
+            "additionalContext": "token = hashlib.sha1(secret.encode()).hexdigest()"
+          }
+        ]
+      }
+    },
+    {
+      "bom-ref": "algorithm:sha256",
+      "name": "SHA256",
+      "type": "crypto-asset",
+      "cryptoProperties": {
+        "assetType": "algorithm",
+        "algorithmProperties": {
+          "primitive": "hash",
+          "variant": "SHA256"
+        },
+        "detectionContext": [
+          {
+            "filePath": "app/auth/password.py",
+            "lineNumbers": [23, 24],
+            "additionalContext": "hashlib.sha256(password.encode()).hexdigest()"
+          }
+        ]
+      }
+    },
+    {
+      "bom-ref": "algorithm:rsa-2048",
+      "name": "RSA",
+      "type": "crypto-asset",
+      "cryptoProperties": {
+        "assetType": "algorithm",
+        "algorithmProperties": {
+          "primitive": "asymmetric-encryption",
+          "variant": "RSA",
+          "keySize": 2048,
+          "padding": "PKCS1v15"
+        },
+        "detectionContext": [
+          {
+            "filePath": "app/crypto/signing.py",
+            "lineNumbers": [18, 19, 20, 21],
+            "additionalContext": "rsa.generate_private_key(public_exponent=65537, key_size=2048)"
+          }
+        ]
+      }
+    },
+    {
+      "bom-ref": "algorithm:rsa-1024",
+      "name": "RSA",
+      "type": "crypto-asset",
+      "cryptoProperties": {
+        "assetType": "algorithm",
+        "algorithmProperties": {
+          "primitive": "asymmetric-encryption",
+          "variant": "RSA",
+          "keySize": 1024,
+          "padding": "PKCS1v15"
+        },
+        "detectionContext": [
+          {
+            "filePath": "app/legacy/encryption.py",
+            "lineNumbers": [7, 8, 9],
+            "additionalContext": "rsa.generate_private_key(public_exponent=65537, key_size=1024)"
+          }
+        ]
+      }
+    },
+    {
+      "bom-ref": "algorithm:ecdsa",
+      "name": "ECDSA",
+      "type": "crypto-asset",
+      "cryptoProperties": {
+        "assetType": "algorithm",
+        "algorithmProperties": {
+          "primitive": "signature",
+          "variant": "ECDSA",
+          "curve": "P-256"
+        },
+        "detectionContext": [
+          {
+            "filePath": "app/crypto/jwt_handler.py",
+            "lineNumbers": [44, 45, 46],
+            "additionalContext": "ec.generate_private_key(ec.SECP256R1())"
+          }
+        ]
+      }
+    },
+    {
+      "bom-ref": "algorithm:aes-ecb",
+      "name": "AES",
+      "type": "crypto-asset",
+      "cryptoProperties": {
+        "assetType": "algorithm",
+        "algorithmProperties": {
+          "primitive": "block-cipher",
+          "variant": "AES",
+          "mode": "ECB",
+          "keySize": 128
+        },
+        "detectionContext": [
+          {
+            "filePath": "app/legacy/data_encryption.py",
+            "lineNumbers": [29, 30, 31, 32],
+            "additionalContext": "Cipher(algorithms.AES(key), modes.ECB())"
+          }
+        ]
+      }
+    },
+    {
+      "bom-ref": "algorithm:aes-gcm",
+      "name": "AES",
+      "type": "crypto-asset",
+      "cryptoProperties": {
+        "assetType": "algorithm",
+        "algorithmProperties": {
+          "primitive": "block-cipher",
+          "variant": "AES",
+          "mode": "GCM",
+          "keySize": 256
+        },
+        "detectionContext": [
+          {
+            "filePath": "app/crypto/file_encryption.py",
+            "lineNumbers": [67, 68, 69],
+            "additionalContext": "Cipher(algorithms.AES(key), modes.GCM(iv))"
+          }
+        ]
+      }
+    },
+    {
+      "bom-ref": "algorithm:3des",
+      "name": "3DES",
+      "type": "crypto-asset",
+      "cryptoProperties": {
+        "assetType": "algorithm",
+        "algorithmProperties": {
+          "primitive": "block-cipher",
+          "variant": "3DES",
+          "mode": "CBC",
+          "keySize": 112
+        },
+        "detectionContext": [
+          {
+            "filePath": "app/legacy/old_crypto.py",
+            "lineNumbers": [15, 16, 17],
+            "additionalContext": "Cipher(algorithms.TripleDES(key), modes.CBC(iv))"
+          }
+        ]
+      }
+    },
+    {
+      "bom-ref": "algorithm:rc4",
+      "name": "RC4",
+      "type": "crypto-asset",
+      "cryptoProperties": {
+        "assetType": "algorithm",
+        "algorithmProperties": {
+          "primitive": "stream-cipher",
+          "variant": "RC4"
+        },
+        "detectionContext": [
+          {
+            "filePath": "app/legacy/stream_cipher.py",
+            "lineNumbers": [8, 9, 10],
+            "additionalContext": "arc4.ARC4(key)"
+          }
+        ]
+      }
+    }
+  ],
+  "dependencies": [
+    { "ref": "algorithm:md5" },
+    { "ref": "algorithm:sha1" },
+    { "ref": "algorithm:sha256" },
+    { "ref": "algorithm:rsa-2048" },
+    { "ref": "algorithm:rsa-1024" },
+    { "ref": "algorithm:ecdsa" },
+    { "ref": "algorithm:aes-ecb" },
+    { "ref": "algorithm:aes-gcm" },
+    { "ref": "algorithm:3des" },
+    { "ref": "algorithm:rc4" },
+    {
+      "ref": "my-python-app",
+      "dependsOn": [
+        "algorithm:md5",
+        "algorithm:sha1",
+        "algorithm:sha256",
+        "algorithm:rsa-2048",
+        "algorithm:rsa-1024",
+        "algorithm:ecdsa",
+        "algorithm:aes-ecb",
+        "algorithm:aes-gcm",
+        "algorithm:3des",
+        "algorithm:rc4"
+      ]
+    }
+  ]
+}
