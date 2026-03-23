@@ -1,0 +1,174 @@
+# pqc_rules.yml
+# Rule-based PQC policy definitions for CipherMind Audit Tool.
+#
+# Each rule has:
+#   id:          unique string identifier
+#   name:        human-readable name
+#   severity:    critical | high | medium | low
+#   description: what the rule flags and why
+#   conditions:  list of field:op:value tuples (ALL must match)
+#   migration:   recommended PQC replacement(s)
+#
+# Supported fields:   variant, primitive, key_size, mode, padding, curve
+# Supported ops:      eq, neq, lt, lte, gt, gte, in, not_in
+# Values are matched case-insensitively for strings.
+
+rules:
+
+  - id: RULE-001
+    name: MD5 Usage Detected
+    severity: critical
+    description: >
+      MD5 is cryptographically broken. Collisions are trivially producible.
+      It must not be used for any security-sensitive purpose including
+      password hashing, integrity checks, or token generation.
+    conditions:
+      - [variant, eq, MD5]
+    migration:
+      - SHA-3-256
+      - SHAKE256
+
+  - id: RULE-002
+    name: SHA-1 Usage Detected
+    severity: high
+    description: >
+      SHA-1 is deprecated by NIST (2030 deadline). Practical collision attacks
+      (SHAttered, 2017) make it unsuitable for digital signatures, certificates,
+      and integrity verification. Migrate to SHA-256 or SHA-3.
+    conditions:
+      - [variant, eq, SHA1]
+    migration:
+      - SHA-256
+      - SHA3-256
+
+  - id: RULE-003
+    name: RSA Key Size Below 2048 Bits
+    severity: critical
+    description: >
+      RSA keys under 2048 bits are factored by modern hardware and are no longer
+      considered secure. NIST deprecated 1024-bit RSA in 2013. Any RSA below
+      2048 bits must be replaced immediately.
+    conditions:
+      - [variant, eq, RSA]
+      - [key_size, lt, 2048]
+    migration:
+      - ML-KEM (key exchange)
+      - ML-DSA (signatures)
+
+  - id: RULE-004
+    name: RSA Usage (Not Quantum-Safe)
+    severity: high
+    description: >
+      RSA is vulnerable to Shor's algorithm on quantum computers. While still
+      classically secure at 2048+ bits, it must be migrated to PQC algorithms
+      before cryptographically relevant quantum computers exist.
+    conditions:
+      - [variant, eq, RSA]
+    migration:
+      - ML-KEM (key exchange)
+      - ML-DSA (signatures)
+
+  - id: RULE-005
+    name: ECDSA Usage (Not Quantum-Safe)
+    severity: high
+    description: >
+      ECDSA is vulnerable to Shor's algorithm. All elliptic curve schemes
+      (ECDSA, ECDH, EdDSA) must be migrated to PQC equivalents as part of
+      any post-quantum migration plan.
+    conditions:
+      - [variant, eq, ECDSA]
+    migration:
+      - ML-DSA
+      - FN-DSA (Falcon)
+
+  - id: RULE-006
+    name: AES-ECB Mode Detected
+    severity: critical
+    description: >
+      ECB (Electronic Codebook) mode is deterministic — identical plaintext
+      blocks produce identical ciphertext. This leaks data patterns and is
+      insecure for any use case. Use GCM or CBC with authentication.
+    conditions:
+      - [variant, eq, AES]
+      - [mode, eq, ECB]
+    migration:
+      - AES-256-GCM
+      - AES-256-CBC with HMAC
+
+  - id: RULE-007
+    name: 3DES (Triple DES) Usage Detected
+    severity: high
+    description: >
+      3DES has an effective key size of 112 bits and is vulnerable to Sweet32
+      birthday attacks due to its 64-bit block size. NIST deprecated 3DES in
+      2017 and disallows it after 2023.
+    conditions:
+      - [variant, eq, 3DES]
+    migration:
+      - AES-256-GCM
+
+  - id: RULE-008
+    name: RC4 Stream Cipher Detected
+    severity: critical
+    description: >
+      RC4 is cryptographically broken with known biases in its output stream.
+      It has been prohibited in TLS since RFC 7465 (2015). It must not be
+      used in any new or existing system.
+    conditions:
+      - [variant, eq, RC4]
+    migration:
+      - AES-256-GCM
+      - ChaCha20-Poly1305
+
+  - id: RULE-009
+    name: ECDH Key Agreement (Not Quantum-Safe)
+    severity: high
+    description: >
+      ECDH is vulnerable to Shor's algorithm. Post-quantum key exchange
+      must use ML-KEM (CRYSTALS-Kyber) as standardized by NIST FIPS 203.
+    conditions:
+      - [variant, eq, ECDH]
+    migration:
+      - ML-KEM
+
+  - id: RULE-010
+    name: RSA-PKCS1v15 Padding (Legacy Padding Scheme)
+    severity: medium
+    description: >
+      PKCS#1 v1.5 padding is vulnerable to Bleichenbacher's oracle attack.
+      Prefer OAEP for encryption and PSS for signatures. Still, RSA must
+      ultimately be replaced with PQC algorithms.
+    conditions:
+      - [variant, eq, RSA]
+      - [padding, eq, PKCS1V15]
+    migration:
+      - RSA-OAEP (short-term)
+      - ML-KEM or ML-DSA (long-term PQC)
+
+  - id: RULE-011
+    name: Short RSA Key (Under 3072 Bits) — Future Deadline
+    severity: medium
+    description: >
+      NIST recommends 3072-bit RSA for security beyond 2030. Keys of exactly
+      2048 bits provide roughly 112-bit security, which is acceptable now
+      but should be planned for rotation.
+    conditions:
+      - [variant, eq, RSA]
+      - [key_size, lt, 3072]
+      - [key_size, gte, 2048]
+    migration:
+      - ML-KEM (key exchange)
+      - ML-DSA (signatures)
+
+  - id: RULE-012
+    name: DSA Usage Detected
+    severity: high
+    description: >
+      DSA is deprecated by NIST and vulnerable to quantum attacks. It is also
+      sensitive to nonce reuse (leading to private key recovery). Migrate to
+      ML-DSA or FN-DSA.
+    conditions:
+      - [variant, eq, DSA]
+    migration:
+      - ML-DSA
+      - FN-DSA (Falcon)
